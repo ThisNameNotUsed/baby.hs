@@ -13,7 +13,9 @@ removeOdds ys = [[ x | x <- xs, even x ] | xs <- ys ]
 
 triangles = [ (a,b,c) | c <- [1..10], b <- [1..10], a <- [1..10]]
 
-rightTriangles = [ (a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2]
+rightTriangles10 = [ (a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2]
+
+rightTriangles100 = [ (a,b,c) | c <- [1..100], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2]
 
 trianglesRight = [ (a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b] ]
 
@@ -60,7 +62,7 @@ bmiTell weight height
     where bmi = weight / height ^ 2  
           skinny = 18.5  
           normal = 25.0  
-          fat = 30.0  
+          fat = 30.0 
 
 max' :: (Ord a) => a -> a -> a
 max' a b
@@ -74,3 +76,52 @@ initials first last = [a] ++ ". " ++ [b] ++ "."
 
 initialsPM :: String -> String -> String
 initialsPM (a:_) (b:_) =  [a] ++ ". " ++ [b] ++ "."
+
+cylinder :: (RealFloat a) => a -> a -> a
+cylinder r h =
+    let sideArea = 2 * pi * r * h
+        topArea = pi * r^2
+    in sideArea + 2 * topArea
+
+calcBmis :: (RealFloat a) => [(a,a)] -> [a]
+calcBmis xs = [bmi | (w, h) <- xs, let bmi = w / h ^ 2]
+
+maximum' :: (Ord a) => [a] -> a  
+maximum' [] = error "maximum of empty list"  
+maximum' [x] = x  
+maximum' (x:xs)   
+    | x > maxTail = x  
+    | otherwise = maxTail  
+    where maxTail = maximum' xs  
+
+replicate' :: (Num i, Ord i) => i -> a -> [a]  
+replicate' n x  
+    | n <= 0    = []  
+    | otherwise = x:replicate' (n-1) x 
+
+take' :: (Num i, Ord i) => i -> [a] -> [a]  
+take' n _  
+    | n <= 0   = []  
+take' _ []     = []  
+take' n (x:xs) = x : take' (n-1) xs  
+
+repeat' :: a -> [a]  
+repeat' x = x:repeat' x  
+
+zip' :: [a] -> [b] -> [(a,b)]
+zip' _ [] = []
+zip' [] _ = []
+zip' (x:xs) (y:ys) = (x,y):zip' xs ys
+
+elem' :: (Eq a) => a -> [a] -> Bool
+elem' thing [] = False
+elem' a (x:xs)
+    | a == x = True
+    | otherwise = elem' a xs
+
+qsort' :: (Ord a) => [a] -> [a]
+qsort' [] = []
+qsort' (x:xs) =
+    let small = qsort' [ a | a <- xs, a <= x]
+        big = qsort' [ a | a <- xs, a > x]
+    in small ++ [x] ++ big
